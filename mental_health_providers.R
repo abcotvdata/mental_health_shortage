@@ -71,6 +71,9 @@ providers_by_county_formap$providers[is.na(providers_by_county_formap$providers)
 # just two different ways to think about the availability question
 providers_by_county_formap$per100Kpeople <- round(providers_by_county_formap$providers/(providers_by_county_formap$population/100000),1)
 providers_by_county_formap$prov_patient_ratio <- round(providers_by_county_formap$population/providers_by_county_formap$providers,1)
+# For cases with infinity on ratio, changed to ratio NA so areas with zero providers are flagged separately on map later
+providers_by_county_formap <- providers_by_county_formap %>%
+  mutate(across(where(is.numeric), ~na_if(., Inf)))
 
 # transforming the projection of the map to something leaflet can work with easily
 providers_by_county_formap <- providers_by_county_formap %>% st_transform(4326)
@@ -100,11 +103,13 @@ addLegend(opacity = 0.5,
           colors = c("#667f99",
                      "#00318b",
                      "#0058f6",
-                     "#ffba00"),
+                     "#ffba00",
+                     "#be0000"),
           labels=c("Highest Availability", 
                    "Higher Availability", 
                    "Lower Availability", 
-                   "Lowest or No Availability"),
+                   "Lowest Availability",
+                   "No Availability"),
           position = "bottomleft", 
           title = "Patient to Provider<br>Ratio By County") 
 providers_by_county_map
