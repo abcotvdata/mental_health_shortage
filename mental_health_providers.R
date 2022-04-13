@@ -60,20 +60,38 @@ providers_by_county_formap$prov_patient_ratio <- providers_by_county_formap$popu
 
 providers_by_county_formap <- providers_by_county_formap %>% st_transform(4326)
 
-bins <- c(0,1000, 10000,25000,50000,100000, Inf)
-pal <- colorBin("YlOrRd", providers_by_county_formap$prov_patient_ratio, bins = bins)
+# Set bins for numbers of crimes for murders map
+pal <- colorQuantile(c("#667f99",
+                       "#00318b",
+                       "#0058f6",
+                       "#ffba00"), providers_by_county_formap$prov_patient_ratio, n = 4, na.color = "#be0000")
 label <- paste(sep = "<br>", providers_by_county_formap$name,
                   "<br>Patient To Provider Ratio: ",providers_by_county_formap$prov_patient_ratio,
                   "<br>Number of providers: ",providers_by_county_formap$providers)
 
+
 providers_by_county_map <- leaflet(providers_by_county_formap) %>%
-  setView(-85.9,38.7, zoom = 5) %>% 
+  setView(-85.9,38.7, zoom = 4) %>% 
   addProviderTiles(provider = "CartoDB.Positron") %>%
   addPolygons(color = "white", popup = label, weight = 1, smoothFactor = 0.5,
-              opacity = 0.5, fillOpacity = 0.4,
-              fillColor = ~pal(`prov_patient_ratio`))
+              opacity = 0.8, fillOpacity = 0.4,
+              fillColor = ~pal(`prov_patient_ratio`)) %>%
+addLegend(opacity = 0.6,
+          values = murders_beat$rate_prior3years, 
+          colors = c("#667f99",
+                     "#00318b",
+                     "#0058f6",
+                     "#ffba00"),
+          labels=c("Highest Availability", 
+                   "Higher Availability", 
+                   "Lower Availability", 
+                   "No Availability"),
+          position = "bottomleft", 
+          title = "Patient to Provider<br>Ratio By County") 
 providers_by_county_map
 
+# this takes the data we used for the map, removes the geo col (size reasons)
+# and then saves for backup as csv for analysis for story
 providers_by_county_table <- providers_by_county_formap %>% st_drop_geometry()
 write_csv(providers_by_county_table,"providers_by_county_table.csv")
   
