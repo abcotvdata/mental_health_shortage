@@ -69,8 +69,8 @@ providers_by_county_formap$providers[is.na(providers_by_county_formap$providers)
 # Calculates ratios/rates in two different ways to help us think about this for reporting
 # Per Capita number of providers as well as a patient-to-provider ratio; either shows the same
 # just two different ways to think about the availability question
-providers_by_county_formap$per100Kpeople <- providers_by_county_formap$providers/(providers_by_county_formap$population/100000)
-providers_by_county_formap$prov_patient_ratio <- providers_by_county_formap$population/providers_by_county_formap$providers
+providers_by_county_formap$per100Kpeople <- round(providers_by_county_formap$providers/(providers_by_county_formap$population/100000),1)
+providers_by_county_formap$prov_patient_ratio <- round(providers_by_county_formap$population/providers_by_county_formap$providers,1)
 
 # transforming the projection of the map to something leaflet can work with easily
 providers_by_county_formap <- providers_by_county_formap %>% st_transform(4326)
@@ -82,9 +82,10 @@ pal <- colorQuantile(c("#667f99",
                        "#0058f6",
                        "#ffba00"), providers_by_county_formap$prov_patient_ratio, n = 4, na.color = "#be0000")
 # crude popup label, which we can improve on if we decide to publish the map
-label <- paste(sep = "<br>", providers_by_county_formap$name,
+label <- paste(sep = "<br><b>", providers_by_county_formap$name,
                   "<br>Patient To Provider Ratio: ",providers_by_county_formap$prov_patient_ratio,
-                  "<br>Number of providers: ",providers_by_county_formap$providers)
+                  "<br>Number of providers: ",providers_by_county_formap$providers,
+                  "<br>Providers Per 100K people: ",providers_by_county_formap$per100Kpeople)
 
 # creates a color-coded county map based on the ratio of patients to providers in each county
 # adds legend that we need to do some more work on to get the wording right; add sourcing; etc
@@ -94,7 +95,7 @@ providers_by_county_map <- leaflet(providers_by_county_formap) %>%
   addPolygons(color = "white", popup = label, weight = 1, smoothFactor = 0.5,
               opacity = 0.8, fillOpacity = 0.4,
               fillColor = ~pal(`prov_patient_ratio`)) %>%
-addLegend(opacity = 0.6,
+addLegend(opacity = 0.5,
           values = murders_beat$rate_prior3years, 
           colors = c("#667f99",
                      "#00318b",
