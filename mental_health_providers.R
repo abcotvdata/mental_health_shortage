@@ -103,7 +103,7 @@ addLegend(opacity = 0.6,
           labels=c("Highest Availability", 
                    "Higher Availability", 
                    "Lower Availability", 
-                   "No Availability"),
+                   "Lowest or No Availability"),
           position = "bottomleft", 
           title = "Patient to Provider<br>Ratio By County") 
 providers_by_county_map
