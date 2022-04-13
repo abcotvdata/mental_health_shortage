@@ -67,10 +67,10 @@ label <- paste(sep = "<br>", providers_by_county_formap$name,
                   "<br>Number of providers: ",providers_by_county_formap$providers)
 
 providers_by_county_map <- leaflet(providers_by_county_formap) %>%
-  setView(-73.9, 40.7, zoom = 10) %>% 
+  setView(-85.9,38.7, zoom = 5) %>% 
   addProviderTiles(provider = "CartoDB.Positron") %>%
   addPolygons(color = "white", popup = label, weight = 1, smoothFactor = 0.5,
-              opacity = 0.5, fillOpacity = 0.3,
+              opacity = 0.5, fillOpacity = 0.4,
               fillColor = ~pal(`prov_patient_ratio`))
 providers_by_county_map
 
