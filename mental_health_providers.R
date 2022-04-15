@@ -10,7 +10,7 @@ library(sf)
 # import the cleaned file Maggie made from NPI
 # That includes just the mental health professionals we're studying
 # And reduces down to the basic fields we need to shrink the size of the massive file
-mentalhealthproviders <- read_csv("mentalhealthproviders.csv", 
+mentalhealthproviders <- read_csv("mentalhealthproviders2.csv", 
                                   col_types = cols(.default = "c")) %>% 
   select(1,2,5:13,29:34)
 # standardize and simplify the names of fields
