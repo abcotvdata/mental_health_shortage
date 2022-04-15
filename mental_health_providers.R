@@ -74,16 +74,18 @@ providers_by_county_formap$prov_patient_ratio <- round(providers_by_county_forma
 # For cases with infinity on ratio, changed to ratio NA so areas with zero providers are flagged separately on map later
 providers_by_county_formap <- providers_by_county_formap %>%
   mutate(across(where(is.numeric), ~na_if(., Inf)))
+providers_by_county_formap <- providers_by_county_formap %>% filter(!is.na(geoid))
 
 # transforming the projection of the map to something leaflet can work with easily
 providers_by_county_formap <- providers_by_county_formap %>% st_transform(4326)
 
 # Set bins for numbers of patients to providers, in four quartiles
 # we can change that to five or six, but simple is always better for viewers
-pal <- colorQuantile(c("#667f99",
-                       "#00318b",
-                       "#0058f6",
-                       "#ffba00"), providers_by_county_formap$prov_patient_ratio, n = 4, na.color = "#be0000")
+
+
+bins <- c(0, 1, 10, 50, 100, 500, 1200)
+pal <- colorBin(palette="plasma",bins=bins,domain=providers_by_county_formap$per100Kpeople)
+
 # crude popup label, which we can improve on if we decide to publish the map
 label <- paste(sep = "<br><b>", providers_by_county_formap$name,
                   "<br>Patient To Provider Ratio: ",providers_by_county_formap$prov_patient_ratio,
@@ -95,23 +97,18 @@ label <- paste(sep = "<br><b>", providers_by_county_formap$name,
 providers_by_county_map <- leaflet(providers_by_county_formap) %>%
   setView(-85.9,38.7, zoom = 4) %>% 
   addProviderTiles(provider = "CartoDB.Positron") %>%
-  addPolygons(color = "white", popup = label, weight = 1, smoothFactor = 0.5,
-              opacity = 0.8, fillOpacity = 0.4,
-              fillColor = ~pal(`prov_patient_ratio`)) %>%
+  addPolygons(color = "white", popup = label, weight = 0.7, smoothFactor = 0.5,
+              opacity = 0.6, fillOpacity = 0.5,
+              fillColor = ~pal(`per100Kpeople`)) %>%
 addLegend(opacity = 0.5,
-          values = murders_beat$rate_prior3years, 
-          colors = c("#667f99",
-                     "#00318b",
-                     "#0058f6",
-                     "#ffba00",
-                     "#be0000"),
-          labels=c("Highest Availability", 
-                   "Higher Availability", 
-                   "Lower Availability", 
-                   "Lowest Availability",
-                   "No Availability"),
+          values = ~per100Kpeople, 
+          pal=pal,
+#          labels=c("Highest Availability", 
+ #                  "Higher Availability", 
+  #                 "Lower Availability", 
+   #                "Lowest Availability"),
           position = "bottomleft", 
-          title = "Patient to Provider<br>Ratio By County") 
+          title = "Providers Per 100K<br>Residents By County") 
 providers_by_county_map
 
 # this takes the data we used for the map, removes the geo col (size reasons)
