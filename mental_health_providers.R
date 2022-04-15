@@ -76,8 +76,21 @@ providers_by_county_formap <- providers_by_county_formap %>%
   mutate(across(where(is.numeric), ~na_if(., Inf)))
 providers_by_county_formap <- providers_by_county_formap %>% filter(!is.na(geoid))
 
+# bring in census rural urban
+urban_rural <- read_excel("PctUrbanRural_County.xls") %>% janitor::clean_names()
+urban_rural$urban_or_rural <- ifelse(urban_rural$poppct_rural > 50, "Rural", "Urban")
+urban_rural$geoid <- paste0(urban_rural$state,urban_rural$county,sep="")
+# add urban rural designator to providers analysis file for map and table
+providers_by_county_formap <- left_join(providers_by_county_formap, urban_rural %>% select(27:28),
+                                        by="geoid")
+providers_by_county_formap$urban_or_rural <- ifelse(is.na(providers_by_county_formap$urban_or_rural), "Rural", providers_by_county_formap$urban_or_rural)
+
+
+
 # transforming the projection of the map to something leaflet can work with easily
 providers_by_county_formap <- providers_by_county_formap %>% st_transform(4326)
+
+
 
 # Set bins for numbers of patients to providers, in four quartiles
 # we can change that to five or six, but simple is always better for viewers
@@ -87,15 +100,15 @@ bins <- c(0, 1, 10, 50, 100, 500, 1200)
 pal <- colorBin(palette="plasma",bins=bins,domain=providers_by_county_formap$per100Kpeople)
 
 # crude popup label, which we can improve on if we decide to publish the map
-label <- paste(sep = "<br><b>", providers_by_county_formap$name,
-                  "<br>Patient To Provider Ratio: ",providers_by_county_formap$prov_patient_ratio,
-                  "<br>Number of providers: ",providers_by_county_formap$providers,
-                  "<br>Providers Per 100K people: ",providers_by_county_formap$per100Kpeople)
+label <- paste(sep = "<br>", "<b>",providers_by_county_formap$name,
+               "<br><b>Number of providers: </b>",providers_by_county_formap$providers,
+               "<br><b>Providers Per 100K people: </b>",providers_by_county_formap$per100Kpeople,
+               "<br><b>Patient To Provider Ratio: </b>",providers_by_county_formap$prov_patient_ratio)
 
 # creates a color-coded county map based on the ratio of patients to providers in each county
 # adds legend that we need to do some more work on to get the wording right; add sourcing; etc
 providers_by_county_map <- leaflet(providers_by_county_formap) %>%
-  setView(-85.9,38.7, zoom = 4) %>% 
+  setView(-94.2,38.8, zoom = 4) %>% 
   addProviderTiles(provider = "CartoDB.Positron") %>%
   addPolygons(color = "white", popup = label, weight = 0.7, smoothFactor = 0.5,
               opacity = 0.6, fillOpacity = 0.5,
@@ -103,10 +116,6 @@ providers_by_county_map <- leaflet(providers_by_county_formap) %>%
 addLegend(opacity = 0.5,
           values = ~per100Kpeople, 
           pal=pal,
-#          labels=c("Highest Availability", 
- #                  "Higher Availability", 
-  #                 "Lower Availability", 
-   #                "Lowest Availability"),
           position = "bottomleft", 
           title = "Providers Per 100K<br>Residents By County") 
 providers_by_county_map
