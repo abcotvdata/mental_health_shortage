@@ -4,7 +4,7 @@ Headline finding: 75% of rural counties have no mental health providers or fewer
 
 Some key findings from the analysis:
 
--- There are 570 U.S. counties with zero mental health providers and 79% of those are rural. Nebraska (49.5%), North Dakota (49.1%) and South Dakota (47%) have the most counties with 0 providers.
+-- There are 570 U.S. counties with zero mental health providers and 79% of those are rural. Nebraska (49.5%), North Dakota (49.1%) and South Dakota (47%) have the highest percentage of counties with 0 providers
 
 -- Rural counties tend to have fewer providers per 100K residents, while urban counties tend to have more.
 
