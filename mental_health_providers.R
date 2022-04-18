@@ -108,12 +108,12 @@ label <- paste(sep = "<br>", "<b>",providers_by_county_formap$name,
 # creates a color-coded county map based on the ratio of patients to providers in each county
 # adds legend that we need to do some more work on to get the wording right; add sourcing; etc
 providers_by_county_map <- leaflet(providers_by_county_formap) %>%
-  setView(-94.2,38.8, zoom = 4) %>% 
+  setView(-95.6,38.8, zoom = 4) %>% 
   addProviderTiles(provider = "CartoDB.Positron") %>%
   addPolygons(color = "white", popup = label, weight = 0.7, smoothFactor = 0.5,
-              opacity = 0.6, fillOpacity = 0.5,
+              opacity = 0.6, fillOpacity = 0.4,
               fillColor = ~pal(`per100Kpeople`)) %>%
-addLegend(opacity = 0.5,
+addLegend(opacity = 0.4,
           values = ~per100Kpeople, 
           pal=pal,
           position = "bottomleft", 
