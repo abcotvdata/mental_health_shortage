@@ -5,6 +5,7 @@ library(leaflet.providers)
 library(leaflet.extras)
 library(readr)
 library(readxl)
+library(htmlwidgets)
 library(sf)
 
 # import the cleaned file Maggie made from NPI
@@ -107,24 +108,30 @@ label <- paste(sep = "<br>", "<b>",providers_by_county_formap$name,
 
 # creates a color-coded county map based on the ratio of patients to providers in each county
 # adds legend that we need to do some more work on to get the wording right; add sourcing; etc
-providers_by_county_map <- leaflet(options = leafletOptions(zoomControl = FALSE)) %>%
+providers_by_county_map <- leaflet(providers_by_county_formap, options = leafletOptions(zoomControl = FALSE)) %>%
   htmlwidgets::onRender("function(el, x) {
 L.control.zoom({ position: 'topright' }).addTo(this)
 }") %>%
   setView(-95.6,38.8, zoom = 4) %>% 
   addProviderTiles(provider = "CartoDB.Positron") %>%
-  addPolygons(data = providers_by_county_formap, color = "white", popup = label, weight = 0.7, smoothFactor = 0.5,
+  addPolygons(color = "white", popup = label, weight = 1, smoothFactor = 0.5,
               opacity = 0.6, fillOpacity = 0.4,
               fillColor = ~pal(`per100Kpeople`)) %>%
 addLegend(opacity = 0.4,
           values = ~per100Kpeople, 
           pal=pal,
           position = "topleft", 
-          title = "Where is it most difficult to get mental health care?<br><small>Mental health care providers per 100,000 residents by county. Zoom in and click to explore the details in your county.</small>") 
+          title = "<big>Mental health care access by county</big><br><small>Providers per 100,000 residents. Click any county for details.") 
 providers_by_county_map
+saveWidget(providers_by_county_map, 'docs/providers_by_county.html', title = "ABC OTV Mental Health Access By County Interactive Map", selfcontained = TRUE)
+
 
 # this takes the data we used for the map, removes the geo col (size reasons)
 # and then saves for backup as csv for analysis for story
 providers_by_county_table <- providers_by_county_formap %>% st_drop_geometry()
 write_csv(providers_by_county_table,"providers_by_county_table.csv")
+
+
+
+
   
