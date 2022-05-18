@@ -107,17 +107,20 @@ label <- paste(sep = "<br>", "<b>",providers_by_county_formap$name,
 
 # creates a color-coded county map based on the ratio of patients to providers in each county
 # adds legend that we need to do some more work on to get the wording right; add sourcing; etc
-providers_by_county_map <- leaflet(providers_by_county_formap) %>%
+providers_by_county_map <- leaflet(options = leafletOptions(zoomControl = FALSE)) %>%
+  htmlwidgets::onRender("function(el, x) {
+L.control.zoom({ position: 'topright' }).addTo(this)
+}") %>%
   setView(-95.6,38.8, zoom = 4) %>% 
   addProviderTiles(provider = "CartoDB.Positron") %>%
-  addPolygons(color = "white", popup = label, weight = 0.7, smoothFactor = 0.5,
+  addPolygons(data = providers_by_county_formap, color = "white", popup = label, weight = 0.7, smoothFactor = 0.5,
               opacity = 0.6, fillOpacity = 0.4,
               fillColor = ~pal(`per100Kpeople`)) %>%
 addLegend(opacity = 0.4,
           values = ~per100Kpeople, 
           pal=pal,
-          position = "bottomleft", 
-          title = "Providers Per 100K<br>Residents By County") 
+          position = "topleft", 
+          title = "Where is it most difficult to get mental health care?<br><small>Mental health care providers per 100,000 residents by county. Zoom in and click to explore the details in your county.</small>") 
 providers_by_county_map
 
 # this takes the data we used for the map, removes the geo col (size reasons)
