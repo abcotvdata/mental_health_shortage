@@ -7,6 +7,13 @@
 
 # User-specific files
 .Ruserdata
+mentalhealthproviders2.csv
+*.Rproj
+npi_analysis*Rmd
+.DS_Store
+*test_scripts*
+NPPES_Data_Dissemination_April_2023*
+
 
 # Example code in package build process
 *-Ex.R
