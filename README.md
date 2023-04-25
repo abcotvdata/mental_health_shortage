@@ -3,9 +3,13 @@ Headline: Nearly 2,000 counties have fewer than 50 mental health care providers 
 Some key findings:
 
 -- There are more than 1,600 counties with fewer than 10 mental health professionals.
+
 -- There are 769 counties where there are fewer than 10 providers per 100,000 residents.
+
 -- There are more than 1,900 counties where the ratio is less than 50 providers per 100,000 residents – a ratio that would mean one provider for every 2,000 potential patients.
+
 -- Texas has the most counties with fewer than 10 total providers. That’s true in 172 counties.
+
 -- Texas is also among the worst states in the country for the share of counties with fewer than 50 providers per 100,000 residents (82% of counties). Only Iowa (86%), Mississippi (85%), Alabama (84%) and Louisiana (83%) had a larger share of counties with low access to care.
 
 You can see the county by county figures for the entire United States displayed on an interactive county map here: https://datawrapper.dwcdn.net/dPGXx/3/. This url can be used to embed the interactive map in Site Editor digital stories. 
