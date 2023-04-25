@@ -129,7 +129,7 @@ addLegend(opacity = 0.4,
           position = "topleft", 
           title = "<big>Mental health care access by county</big><br><small>Providers per 100,000 residents. Click any county for details.") 
 providers_by_county_map
-saveWidget(providers_by_county_map, 'docs/providers_by_county.html', title = "ABC OTV Mental Health Access By County Interactive Map", selfcontained = TRUE)
+# saveWidget(providers_by_county_map, 'providers_by_county.html', title = "ABC OTV Mental Health Access By County Interactive Map", selfcontained = TRUE)
 
 
 # this takes the data we used for the map, removes the geo col (size reasons)
