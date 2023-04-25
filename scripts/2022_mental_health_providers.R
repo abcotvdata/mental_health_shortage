@@ -15,8 +15,8 @@ mentalhealthproviders <- read_csv("mentalhealthproviders2.csv",
                                   col_types = cols(.default = "c")) %>% 
   select(1,2,5:13,29:34)
 
-taxonomy_list <- read_csv("https://www.nucc.org/images/stories/CSV/nucc_taxonomy_230.csv") %>% janitor::clean_names()
-taxonomy_list_check <- taxonomy_list %>% filter(code %in% tax)
+#taxonomy_list <- read_csv("https://www.nucc.org/images/stories/CSV/nucc_taxonomy_230.csv") %>% janitor::clean_names()
+#taxonomy_list_check <- taxonomy_list %>% filter(code %in% tax)
 #mentalhealthproviders <- mentalhealthproviders %>% janitor::clean_names()
 #mentalhealthproviders <- mentalhealthproviders %>% group_by(code1) %>% summarise(count=n())
 
